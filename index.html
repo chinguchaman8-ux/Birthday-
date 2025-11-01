@@ -155,6 +155,20 @@
       50% { transform: translateY(-24px); }
     }
 
+    /* small play link */
+    #play-music-link {
+      display: inline-block;
+      margin-left: 1rem;
+      font-weight: 700;
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+      padding: 0.5rem 0.9rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .15s ease;
+    }
+    #play-music-link:active { transform: scale(.98); }
   </style>
 </head>
 <body class="bg-pink-50 min-h-screen overflow-x-hidden relative">
@@ -166,6 +180,7 @@
   <audio id="bday-music" loop preload="auto">
     <!-- Replace the 'src' with your birthday tune URL -->
     <source src="birthday.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
   </audio>
 
   <main class="max-w-4xl mx-auto p-6 bg-white rounded-3xl shadow-xl mt-12">
@@ -174,13 +189,17 @@
         🎉 Happy Birthday Sakshii 🎂💖
       </h1>
       <p class="text-xl italic text-purple-700 max-w-2xl mx-auto mb-8">
-        My dearest Sakshii, you are the brightest light in our lives. Thank you for your kindness, laughter, and for being the most incredible sister. Wishing you a day filled with all the joy you bring to the world!
+        My dearest Sakshii, you are the brightest light in our lives. Thank you for your kindness, laughter, and for being the most incredible sister. Wishing you a day filled with all the joy you bri[...]
       </p>
       <p class="text-lg font-bold text-pink-600 mb-2">You’re the best sister ever! 💖✨</p>
       <p class="text-base text-purple-600 animate-pulse mb-10">Wishing you smiles, sparkles, and lots of cake 🎂🎈</p>
-      <button id="open-folder-btn" class="bg-gradient-to-r from-pink-500 to-purple-600 py-4 px-10 rounded-full text-white font-extrabold text-xl tracking-wider uppercase shadow-xl transition-transform transform hover:scale-105 active:scale-95 focus:ring-4 focus:ring-pink-300">
-        Open Happy Folder 💌
-      </button>
+      <div class="flex justify-center items-center space-x-2">
+        <button id="open-folder-btn" class="bg-gradient-to-r from-pink-500 to-purple-600 py-4 px-10 rounded-full text-white font-extrabold text-xl tracking-wider uppercase shadow-xl transition-transform transform hover:scale-105 select-none">
+          Open Happy Folder 💌
+        </button>
+        <!-- Play link: user clicks this to explicitly start audio if needed -->
+        <a id="play-music-link" href="#" role="button" aria-label="Play birthday music">Play Song ▶️</a>
+      </div>
     </section>
 
     <section id="happy-folder-section" class="hidden opacity-0 pt-12">
@@ -201,6 +220,7 @@
       const confettiContainer = document.getElementById('confetti-container');
       const musicPlayer = document.getElementById('bday-music');
       const openFolderBtn = document.getElementById('open-folder-btn');
+      const playMusicLink = document.getElementById('play-music-link');
       const openingSection = document.getElementById('opening-section');
       const happyFolderSection = document.getElementById('happy-folder-section');
       const memoryFlowContainer = document.getElementById('memory-flow-container');
@@ -303,9 +323,33 @@
         body.appendChild(overlay);
       }
 
+      // Helper to explicitly start music with proper user gesture.
+      function startMusic(options = {}) {
+        // Set defaults and apply explicit unmute + volume
+        try {
+          if (typeof options.volume === 'number') {
+            musicPlayer.volume = Math.max(0, Math.min(1, options.volume));
+          } else {
+            musicPlayer.volume = 0.8; // make it audible by default
+          }
+          musicPlayer.muted = false;
+          // Reset to start in case it was paused or partially played
+          if (options.restart) musicPlayer.currentTime = 0;
+          // Play returns a promise; handle rejections silently (browser policies)
+          return musicPlayer.play().catch((err) => {
+            // If browser still blocks play, show brief console info;
+            console.warn('Playback prevented by browser:', err);
+            return Promise.reject(err);
+          });
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      }
+
+      // Primary "Open Happy Folder" button behavior — still attempts to play but doesn't replace explicit play link
       openFolderBtn.addEventListener('click', () => {
-        musicPlayer.volume = 0.4;
-        musicPlayer.play().catch(() => {});
+        // Try to play music with reduced chance of being blocked since it's a user gesture as part of click.
+        startMusic({ volume: 0.6 }).catch(() => {});
         openingSection.classList.add('opacity-0');
         setTimeout(() => {
           openingSection.classList.add('hidden');
@@ -316,6 +360,28 @@
           }, 50);
         }, 700);
         openFolderBtn.disabled = true;
+      });
+
+      // Explicit play link: ensures music starts when user clicks the link. This is the most reliable way to make audio audible.
+      playMusicLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Try to start music and give feedback via link text
+        startMusic({ volume: 0.9, restart: true })
+          .then(() => {
+            playMusicLink.textContent = 'Playing ▶️';
+            playMusicLink.style.opacity = '0.9';
+            // optional: hide after a moment
+            setTimeout(() => { playMusicLink.style.display = 'none'; }, 1200);
+          })
+          .catch(() => {
+            // If playback still blocked, change text to inform user to allow audio or interact again
+            playMusicLink.textContent = 'Click again to allow sound';
+          });
+      });
+
+      // If you want the audio to stop when user navigates away, pause on unload (optional)
+      window.addEventListener('pagehide', () => {
+        try { musicPlayer.pause(); } catch (e) {}
       });
     });
   </script>
