@@ -1,306 +1,323 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Sakshii! 🎂✨</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Pacifico font for a fun, playful feel -->
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        /* Define the custom font usage */
-        .font-pacifico { font-family: 'Pacifico', cursive; }
-        .font-inter { font-family: 'Inter', sans-serif; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday Sakshii! 🎉✨</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Fonts */
+    .font-pacifico { font-family: 'Pacifico', cursive; }
+    .font-inter { font-family: 'Inter', sans-serif; }
 
-        /* Custom Keyframes for Festive Animations */
-        @keyframes confetti-fall {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0.5; }
-        }
-        @keyframes slide-in-left {
-            0% { opacity: 0; transform: translateX(-100%) scale(0.8); }
-            100% { opacity: 1; transform: translateX(0) scale(1); }
-        }
-        .slide-in-left { animation: slide-in-left 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-        @keyframes slide-in-right {
-            0% { opacity: 0; transform: translateX(100%) scale(0.8); }
-            100% { opacity: 1; transform: translateX(0) scale(1); }
-        }
-        .slide-in-right { animation: slide-in-right 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
-        
-        /* Initial Sparkle/Pulse */
-        @keyframes sparkle-pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
-        }
-        .sparkle-pulse { animation: sparkle-pulse 2s ease-in-out infinite alternate; }
+    /* Confetti animation */
+    #confetti-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; overflow: hidden; z-index: 10; }
+    .confetti {
+      position: absolute; 
+      width: 10px; height: 10px; border-radius: 50%;
+      animation: confetti-fall 8s linear infinite;
+    }
+    @keyframes confetti-fall {
+      0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0.5; }
+    }
 
-        /* Final Collage Blinking/Pulsing Animation */
-        @keyframes collage-blink {
-            0% { filter: brightness(1); box-shadow: 0 0 15px rgba(255, 100, 150, 0.7); }
-            50% { filter: brightness(1.1); box-shadow: 0 0 25px rgba(255, 100, 150, 1); }
-            100% { filter: brightness(1); box-shadow: 0 0 15px rgba(255, 100, 150, 0.7); }
-        }
-        .blinking-collage { animation: collage-blink 3s ease-in-out infinite; }
+    /* Text gradient and sparkle */
+    .gradient-text {
+      background: linear-gradient(45deg, #ff7e5f, #feb47b, #ff7e5f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% 200%;
+      animation: shimmer 4s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    @keyframes sparkle-pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    .sparkle-pulse { animation: sparkle-pulse 2s ease-in-out infinite alternate; }
 
+    /* Button styles */
+    button:focus { outline: none; box-shadow: 0 0 0 4px rgba(236 72 153 / 0.6); }
 
-        /* Confetti and Gradient Styles */
-        #confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 10; }
-        .confetti { position: absolute; width: 10px; height: 10px; border-radius: 50%; animation: confetti-fall 8s linear infinite; }
-        .gradient-text {
-            background-image: linear-gradient(45deg, #ff7e5f, #feb47b, #ff7e5f);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% 200%;
-            animation: shimmer 4s ease-in-out infinite;
-        }
-        @keyframes shimmer {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
+    /* Slide in left & right animations for image rows */
+    @keyframes slideInLeft {
+      0% { opacity: 0; transform: translateX(-80px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideInRight {
+      0% { opacity: 0; transform: translateX(80px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
 
-        /* --- Collage Container Styles (For Final State) --- */
-        #memory-flow-container {
-            /* Initial stacking container for sequential flow */
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: all 1s ease-in-out;
-        }
-        .memory-card { transition: all 1s ease-in-out; transform-origin: center; }
-        #memory-flow-container.collage-grid {
-            /* Final Collage State: Full Screen */
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; max-width: none;
-            padding: 2vh 2vw; margin: 0; display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            grid-auto-rows: 150px; gap: 5px;
-            background-color: rgba(255, 255, 255, 0.9); z-index: 50; overflow-y: auto;
-        }
-        .collage-grid .memory-card { width: 100% !important; height: 100% !important; padding: 0 !important; box-shadow: none !important; }
-        .collage-grid .memory-card > div { height: 100%; width: 100%; border: 2px solid white; border-radius: 0; box-shadow: none !important; overflow: hidden; }
-        .collage-grid .memory-card img { width: 100%; height: 100%; object-fit: cover !important; transition: all 0.5s; }
-        .collage-grid .caption-overlay, .collage-grid .sticker { display: none !important; }
-        .collage-active { overflow: hidden; }
+    .image-row {
+      opacity: 0;
+      animation-fill-mode: forwards;
+      animation-duration: 0.7s;
+      animation-timing-function: cubic-bezier(0.36, 0.66, 0.04, 1);
+    }
+    .row-left { animation-name: slideInLeft; }
+    .row-right { animation-name: slideInRight; }
 
-    </style>
+    /* Caption bubble */
+    .caption {
+      font-size: 1.1rem;
+      padding: 0.5rem 1rem;
+      margin: 0 0.75rem;
+      background: rgba(219 39 119 / 0.15);
+      border-radius: 9999px;
+      color: #db2777;
+      font-weight: 600;
+      white-space: nowrap;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    /* Image styles */
+    .slide-img {
+      border-radius: 1rem;
+      box-shadow: 0 6px 18px rgba(219 39 119 / 0.4);
+      width: 160px;
+      height: 160px;
+      object-fit: cover;
+      border: 4px solid #ec4899;
+      flex-shrink: 0;
+    }
+
+    /* Collage Styles */
+    #memory-flow-container.collage-grid {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      margin: 0; padding: 1.5rem; 
+      background-color: rgba(255 255 255 / 0.9);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-auto-rows: 160px;
+      gap: 10px;
+      overflow-y: auto;
+      z-index: 50;
+      animation: collageBlink 3s ease-in-out infinite;
+    }
+    #memory-flow-container.collage-grid .memory-card {
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+    #memory-flow-container.collage-grid .memory-card > div {
+      width: 100%; height: 100%; border: 2px solid white;
+      border-radius: 0; overflow: hidden;
+    }
+    #memory-flow-container.collage-grid .memory-card img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.5s ease;
+      border-radius: 0;
+    }
+    #memory-flow-container.collage-grid .caption {
+      display: none !important;
+    }
+    .blinking-collage {
+      box-shadow: 0 0 20px 8px rgba(236 72 153 / 0.35);
+      border-radius: 1rem;
+    }
+    @keyframes collageBlink {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.25) saturate(1.15); }
+    }
+
+    /* Overlay message */
+    .overlay-message {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+      z-index: 60;
+    }
+    .overlay-message p {
+      font-family: 'Pacifico', cursive;
+      font-size: 3rem;
+      padding: 1rem 2rem;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 1rem;
+      color: white;
+      animation: bounce 2s ease infinite;
+      user-select: none;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-24px); }
+    }
+
+  </style>
 </head>
+<body class="bg-pink-50 min-h-screen overflow-x-hidden relative">
 
-<body class="font-inter min-h-screen bg-pink-50 bg-opacity-70 flex flex-col items-center p-4 relative overflow-x-hidden">
+  <!-- Confetti Background -->
+  <div id="confetti-container"></div>
 
-    <!-- Background Confetti & Animation Layer (Z-index 10) -->
-    <div id="confetti-container"></div>
+  <!-- Audio Player -->
+  <audio id="bday-music" loop preload="auto">
+    <!-- Replace the 'src' with your birthday tune URL -->
+    <source src="https://cdn.pixabay.com/download/audio/2022/08/20/audio_120bfa0e14.mp3?filename=birthday-happy-6390.mp3" type="audio/mpeg">
+  </audio>
 
-    <!-- AUDIO ELEMENT - IMPORTANT: REPLACE 'YOUR_AUDIO_LINK_HERE.mp3' WITH A REAL URL -->
-    <audio id="bday-music" loop>
-        <source src="YOUR_AUDIO_LINK_HERE.mp3" type="audio/mpeg" onerror="console.error('Audio file not found or unsupported format.');">
-    </audio>
+  <main class="max-w-4xl mx-auto p-6 bg-white rounded-3xl shadow-xl mt-12">
+    <section id="opening-section" class="text-center transition-opacity duration-700 ease-in-out">
+      <h1 class="text-6xl font-pacifico mb-6 gradient-text sparkle-pulse select-none">
+        🎉 Happy Birthday Sakshii 🎂💖
+      </h1>
+      <p class="text-xl italic text-purple-700 max-w-2xl mx-auto mb-8">
+        My dearest Sakshii, you are the brightest light in our lives. Thank you for your kindness, laughter, and for being the most incredible sister. Wishing you a day filled with all the joy you bring to the world!
+      </p>
+      <p class="text-lg font-bold text-pink-600 mb-2">You’re the best sister ever! 💖✨</p>
+      <p class="text-base text-purple-600 animate-pulse mb-10">Wishing you smiles, sparkles, and lots of cake 🎂🎈</p>
+      <button id="open-folder-btn" class="bg-gradient-to-r from-pink-500 to-purple-600 py-4 px-10 rounded-full text-white font-extrabold text-xl tracking-wider uppercase shadow-xl transition-transform transform hover:scale-105 active:scale-95 focus:ring-4 focus:ring-pink-300">
+        Open Happy Folder 💌
+      </button>
+    </section>
 
-    <!-- Main Content Container (Z-index 20) -->
-    <main class="w-full max-w-4xl p-6 md:p-10 bg-white rounded-3xl shadow-2xl mt-8 mb-8 z-20">
+    <section id="happy-folder-section" class="hidden opacity-0 pt-12">
+      <h2 class="text-3xl font-pacifico text-center text-gray-800 mb-10 select-none">
+        Unfolding Sweetest Moments 📸
+      </h2>
+      <div id="memory-flow-container" class="flex flex-col items-center space-y-6 max-w-xl mx-auto"></div>
+      <div id="back-button-container" class="text-center mt-10">
+        <button onclick="window.location.reload()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-full transition-transform transform hover:scale-105 select-none">
+          &larr; Start Over
+        </button>
+      </div>
+    </section>
+  </main>
 
-        <!-- 1. Opening Section (Text is immediately visible) -->
-        <section id="opening-section" class="text-center transition-opacity duration-1000 ease-in-out">
-            <h1 class="text-6xl md:text-8xl font-pacifico leading-tight gradient-text drop-shadow-lg p-2 mb-4 sparkle-pulse">
-                🎉 Happy Birthday Sakshii 🎂💖
-            </h1>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const confettiContainer = document.getElementById('confetti-container');
+      const musicPlayer = document.getElementById('bday-music');
+      const openFolderBtn = document.getElementById('open-folder-btn');
+      const openingSection = document.getElementById('opening-section');
+      const happyFolderSection = document.getElementById('happy-folder-section');
+      const memoryFlowContainer = document.getElementById('memory-flow-container');
+      const backButtonContainer = document.getElementById('back-button-container');
+      const body = document.body;
 
-            <!-- Sister's Emotional Paragraph -->
-            <p class="text-xl md:text-2xl font-pacifico text-purple-600 italic max-w-2xl mx-auto mb-6">
-                My dearest Sakshii, you are the brightest light in our lives. Thank you for your kindness, laughter, and for being the most incredible sister. Wishing you a day filled with all the joy you bring to the world!
-            </p>
+      const imageCount = 15;
+      const captions = [
+        "Sweet Memories 💕", "Best Moments 🎁", "Love You Sis 💖", "Crazy Times 🥳", "Shine Bright ✨",
+        "Priceless Laughter 😂", "Adventures Together 🌍", "Forever Bonded ♾️"
+      ];
+      const imageElements = [];
 
-            <div class="space-y-4 my-8">
-                <p class="text-xl md:text-2xl font-bold text-pink-600">
-                    You’re the best sister ever! 💖✨
-                </p>
-                <p class="text-lg md:text-xl text-purple-600 animate-pulse">
-                    Wishing you smiles, sparkles, and lots of cake 🎂🎈
-                </p>
-            </div>
-
-            <div class="my-10">
-                <!-- 2. Button Section - Now active immediately -->
-                <button id="open-folder-btn" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-extrabold py-4 px-8 rounded-full shadow-xl transition transform hover:scale-105 active:scale-95 text-xl tracking-wider uppercase focus:outline-none focus:ring-4 focus:ring-pink-300">
-                    Open Happy Folder 💌
-                </button>
-            </div>
-        </section>
-
-        <!-- 3. Image Animation Section (Happy Folder) - The Scrollable Container -->
-        <section id="happy-folder-section" class="hidden opacity-0 pt-12">
-            <h2 class="text-3xl font-pacifico text-center text-gray-800 mb-8">
-                Unfolding Sweetest Moments 📸
-            </h2>
-            <div id="memory-flow-container" class="w-full max-w-xl mx-auto flex flex-col items-center space-y-4 pb-12">
-                <!-- Image cards will be added here sequentially -->
-            </div>
-            <!-- Back button (Hidden during collage) -->
-            <div id="back-button-container" class="text-center mt-8">
-                <button onclick="window.location.reload()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full transition transform hover:scale-105">
-                    &larr; Start Over
-                </button>
-            </div>
-        </section>
-
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const confettiContainer = document.getElementById('confetti-container');
-            const musicPlayer = document.getElementById('bday-music');
-            const openFolderBtn = document.getElementById('open-folder-btn');
-            const openingSection = document.getElementById('opening-section');
-            const happyFolderSection = document.getElementById('happy-folder-section');
-            const memoryFlowContainer = document.getElementById('memory-flow-container');
-            const backButtonContainer = document.getElementById('back-button-container');
-            const body = document.body;
-
-            const imageCount = 15;
-            const captions = ["Sweet Memories 💕", "Best Moments 🎁", "Love You Sis 💖", "Crazy Times 🥳", "Shine Bright ✨", "Priceless Laughter 😂", "Adventures Together 🌍", "Forever Bonded ♾️"];
-            const imageElements = []; // To store all created elements for the collage stage
-
-            const imageSlides = [];
-            for (let i = 1; i <= imageCount; i++) {
-                imageSlides.push({
-                    src: `image${i}.jpg`,
-                    caption: captions[i % captions.length],
-                });
-            }
-
-            // --- 1. Confetti Generation ---
-            const createConfetti = () => {
-                for (let i = 0; i < 50; i++) {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = `${Math.random() * 100}vw`;
-                    confetti.style.animationDelay = `${Math.random() * 8}s`;
-                    confetti.style.backgroundColor = ['#ff7e5f', '#feb47b', '#a78bfa', '#ffb7c7'][Math.floor(Math.random() * 4)];
-                    confettiContainer.appendChild(confetti);
-                }
-            };
-            createConfetti();
-
-            // --- 2. Sequential Image Creation and Scroll Logic ---
-            const createCollageImage = (i, directionClass) => {
-                const slide = imageSlides[i - 1];
-                const caption = slide.caption;
-
-                const card = document.createElement('div');
-                card.classList.add('memory-card', 'w-full', 'p-4', 'opacity-0', 'transform', 'transition', 'duration-1000', 'ease-in-out', 'relative');
-                
-                // Set initial position/size for the flow stage
-                card.classList.add('md:w-3/4'); 
-                if (directionClass === 'slide-in-right') {
-                    card.classList.add('self-end');
-                } else {
-                    card.classList.add('self-start');
-                }
-                
-                card.style.height = '350px'; // Consistent height for the flow stage
-
-                card.innerHTML = `
-                    <div class="relative bg-white rounded-xl shadow-2xl border-4 border-pink-300 overflow-hidden w-full h-full ${directionClass}">
-                        <img src="${slide.src}" alt="Memory ${i} with Sakshii"
-                             class="w-full h-full object-cover rounded-lg"
-                             onerror="this.onerror=null;this.src='https://placehold.co/400x300/FFC0CB/000000?text=Sakshii%20Pic%20${i}'">
-
-                        <p class="caption-overlay absolute bottom-0 left-0 bg-purple-500/90 text-white text-xs md:text-sm font-bold p-1 px-3 rounded-tr-xl">${caption}</p>
-                        <span class="sticker absolute top-1 right-1 text-2xl">✨</span>
-                    </div>
-                `;
-
-                memoryFlowContainer.appendChild(card);
-                imageElements.push(card); // Save for collage
-
-                // Trigger animation by removing opacity-0 after appending
-                setTimeout(() => {
-                    card.classList.remove('opacity-0');
-                }, 50);
-
-                // Scroll the window to reveal the new card smoothly
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            };
-
-            const animateImagesSequentially = async () => {
-                const totalDelay = 2000; // Time between cards (1s animation + 1s pause/scroll)
-
-                for (let i = 1; i <= imageCount; i++) {
-                    const directionClass = i % 2 !== 0 ? 'slide-in-left' : 'slide-in-right';
-                    createCollageImage(i, directionClass);
-                    await new Promise(resolve => setTimeout(resolve, totalDelay));
-                }
-
-                // --- 3. Final Merge into Full-Screen Collage ---
-                await new Promise(resolve => setTimeout(resolve, 3000)); // Wait after the last image appears
-                createFinalCollage();
-            };
-
-            const createFinalCollage = () => {
-                // Hide the original page content and back button
-                document.getElementById('happy-folder-section').classList.add('hidden');
-                backButtonContainer.classList.add('hidden');
-                
-                // Add class to body to prevent scrolling
-                body.classList.add('collage-active'); 
-
-                // 1. Change the container to a grid layout and make it full screen
-                memoryFlowContainer.classList.add('collage-grid');
-                memoryFlowContainer.classList.remove('flex-col', 'space-y-4');
-                body.appendChild(memoryFlowContainer); // Move container to body to cover everything
-
-                // 2. Add Blinking/Pulsing Animation to the entire collage container
-                memoryFlowContainer.classList.add('blinking-collage');
-                
-                // 3. Iterate through all image elements and make them snap into the grid
-                imageElements.forEach(card => {
-                    // Reset sequential flow classes and apply collage layout classes
-                    card.classList.remove('self-end', 'self-start', 'w-full', 'md:w-3/4');
-                    
-                    // Reset inner div animation classes for clean merge
-                    const innerDiv = card.querySelector('div');
-                    if (innerDiv) {
-                         innerDiv.classList.remove('slide-in-left', 'slide-in-right', 'shadow-2xl');
-                    }
-                });
-                
-                // Final celebratory message overlay
-                const overlay = document.createElement('div');
-                overlay.className = "fixed inset-0 flex items-center justify-center pointer-events-none z-[60] text-white";
-                overlay.innerHTML = `<p class="text-5xl md:text-7xl font-pacifico bg-black/50 p-4 rounded-xl shadow-xl animate-bounce">Forever Loved, Sakshii! ❤️</p>`;
-                body.appendChild(overlay);
-            };
-
-
-            // --- 4. Event Listener and Music Playback ---
-            const openHappyFolder = () => {
-                // Try to play music upon user interaction
-                musicPlayer.volume = 0.4;
-                musicPlayer.play().catch(e => console.error("Music Playback failed:", e));
-
-                // Start page transition and slideshow
-                openingSection.classList.add('opacity-0');
-                setTimeout(() => {
-                    openingSection.classList.add('hidden');
-                    happyFolderSection.classList.remove('hidden');
-                    setTimeout(() => {
-                        happyFolderSection.classList.remove('opacity-0');
-                        // Start the main sequence
-                        animateImagesSequentially();
-                    }, 50);
-                }, 1000);
-
-                openFolderBtn.disabled = true;
-            };
-
-            openFolderBtn.addEventListener('click', openHappyFolder);
+      const imageSlides = [];
+      for (let i = 1; i <= imageCount; i++) {
+        imageSlides.push({
+          src: `image${i}.jpg`,
+          caption: captions[i % captions.length],
         });
-    </script>
+      }
 
+      // Add confetti
+      function createConfetti() {
+        for(let i = 0; i < 60; i++){
+          let confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          confetti.style.left = Math.random() * 100 + 'vw';
+          confetti.style.top = -Math.random() * 20 + 'vh';
+          confetti.style.backgroundColor = ['#ff7e5f','#feb47b','#a78bfa','#ffb7c7'][Math.floor(Math.random()*4)];
+          confetti.style.animationDelay = Math.random() * 8 + 's';
+          confetti.style.width = (Math.random()*7 + 5) + 'px';
+          confetti.style.height = confetti.style.width;
+          confettiContainer.appendChild(confetti);
+        }
+      }
+      createConfetti();
+
+      // Sequentially add images horizontally alternating sides, scrolling page up as images come
+      function createMemoryCard(i) {
+        const memory = imageSlides[i-1];
+        let card = document.createElement('div');
+        card.className = 'memory-card flex items-center space-x-4 px-6 py-3 rounded-2xl bg-white shadow-md transform opacity-0 transition-opacity duration-700 ease-in-out';
+        card.style.animationFillMode = 'forwards';
+        card.style.animationDuration = '0.8s';
+        card.style.animationTimingFunction = 'cubic-bezier(0.36, 0.66, 0.04, 1)';
+        card.classList.add(i % 2 === 1 ? 'row-left' : 'row-right');
+        if(i % 2 === 0) card.classList.add('flex-row-reverse');
+
+        const img = document.createElement('img');
+        img.src = memory.src;
+        img.alt = `Memory ${i} - Sakshii`;
+        img.className = 'slide-img';
+
+        const caption = document.createElement('p');
+        caption.className = 'caption';
+        caption.textContent = memory.caption;
+
+        card.appendChild(img);
+        card.appendChild(caption);
+
+        memoryFlowContainer.appendChild(card);
+        imageElements.push(card);
+
+        setTimeout(() => {
+          card.style.opacity = '1';
+          card.style.animationName = i % 2 === 1 ? 'slideInLeft' : 'slideInRight';
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 50);
+      }
+
+      async function animateImagesSequentially(){
+        for(let i = 1; i <= imageCount; i++){
+          createMemoryCard(i);
+          await new Promise(res => setTimeout(res, 2000));
+        }
+        setTimeout(showFinalCollage, 2500);
+      }
+
+      function showFinalCollage(){
+        happyFolderSection.classList.add('hidden');
+        backButtonContainer.classList.add('hidden');
+        memoryFlowContainer.classList.add('collage-grid', 'blinking-collage');
+        memoryFlowContainer.classList.remove('flex-col', 'space-y-6');
+        body.classList.add('overflow-hidden');
+
+        imageElements.forEach(card => {
+          card.classList.remove('row-left', 'row-right', 'flex-row-reverse', 'opacity-0');
+          card.style.animation = 'none';
+          card.style.opacity = '1';
+          const img = card.querySelector('img');
+          if(img) img.style.borderRadius = '0';
+          const caption = card.querySelector('.caption');
+          if(caption) caption.style.display = 'none';
+        });
+
+        // Overlay message
+        let overlay = document.createElement('div');
+        overlay.className = 'overlay-message';
+        overlay.innerHTML = `<p>Forever Loved, Sakshii! ❤️</p>`;
+        body.appendChild(overlay);
+      }
+
+      openFolderBtn.addEventListener('click', () => {
+        musicPlayer.volume = 0.4;
+        musicPlayer.play().catch(() => {});
+        openingSection.classList.add('opacity-0');
+        setTimeout(() => {
+          openingSection.classList.add('hidden');
+          happyFolderSection.classList.remove('hidden');
+          setTimeout(() => {
+            happyFolderSection.classList.remove('opacity-0');
+            animateImagesSequentially();
+          }, 50);
+        }, 700);
+        openFolderBtn.disabled = true;
+      });
+    });
+  </script>
 </body>
 </html>
-
