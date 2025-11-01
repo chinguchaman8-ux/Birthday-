@@ -178,13 +178,13 @@
   <!-- Confetti Background -->
   <div id="confetti-container"></div>
 
-  <!-- Audio Player -->
-  <!-- IMPORTANT:
-       - Ensure 'birthday.mp3' exists at this path or change src to an absolute/valid URL.
-       - 'playsinline' helps on mobile.
-       - 'controls' is included temporarily to test; remove it once playback is working.
+  <!-- Audio Player
+       Notes:
+       - Modern browsers block autoplay with audible sound unless the user has granted autoplay permissions.
+       - To achieve autoplay across most browsers we autoplay muted, then unmute when the user interacts (click/tap).
+       - The audio element is hidden so it runs in the background.
   -->
-  <audio id="bday-music" loop preload="auto" playsinline controls>
+  <audio id="bday-music" loop preload="auto" playsinline autoplay muted style="display:none">
     <source src="birthday.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
@@ -203,11 +203,11 @@
         <button id="open-folder-btn" class="bg-gradient-to-r from-pink-500 to-purple-600 py-4 px-10 rounded-full text-white font-extrabold text-xl tracking-wider uppercase shadow-xl transition-transform select-none">
           Open Happy Folder 💌
         </button>
-        <!-- Play link: user clicks this to explicitly start audio if needed -->
+        <!-- Play link: user clicks this to explicitly start/unmute audio if needed -->
         <a id="play-music-link" href="#" role="button" aria-label="Play birthday music">Play Song ▶️</a>
         <span id="audio-feedback" aria-live="polite"></span>
       </div>
-      <p class="text-sm text-gray-500 mt-3">If you still don't hear anything, check that 'birthday.mp3' exists in the same folder or click the audio controls above to test playback.</p>
+      <p class="text-sm text-gray-500 mt-3">If you still don't hear anything, click "Play Song" or tap anywhere on the page to allow sound (some browsers block autoplay with sound).</p>
     </section>
 
     <section id="happy-folder-section" class="hidden opacity-0 pt-12">
@@ -332,32 +332,61 @@
         body.appendChild(overlay);
       }
 
-      // Helper to explicitly start music with proper user gesture.
+      // Helper to explicitly start/unmute music with proper user gesture.
       async function startMusic(options = {}) {
-        // Set defaults and apply explicit unmute + volume
         try {
           if (typeof options.volume === 'number') {
             musicPlayer.volume = Math.max(0, Math.min(1, options.volume));
           } else {
-            musicPlayer.volume = 0.8; // make it audible by default
+            musicPlayer.volume = 0.8;
           }
-          musicPlayer.muted = false;
-          // Reset to start in case it was paused or partially played
+          musicPlayer.muted = !!options.muted;
           if (options.restart) musicPlayer.currentTime = 0;
-
-          // Some browsers require a direct user gesture: ensure this function is called inside a click handler.
-          await musicPlayer.play(); // if this rejects, we'll catch below
+          await musicPlayer.play();
           return Promise.resolve();
         } catch (err) {
-          // bubble up an error so caller can update UI
           return Promise.reject(err);
         }
       }
 
+      // Try to autoplay on load (muted). Most browsers allow muted autoplay.
+      // We already set autoplay and muted attributes on the audio element; attempt play to be sure.
+      (async function tryAutoplayMuted() {
+        try {
+          await musicPlayer.play();
+          audioFeedback.textContent = '';
+        } catch (e) {
+          // If autoplay fails, leave muted and provide UI to start.
+          audioFeedback.textContent = 'Autoplay blocked — tap to enable sound.';
+        }
+      })();
+
+      // If user interacts anywhere on the page, unmute and set volume (common pattern).
+      // This makes audible playback possible after a user gesture.
+      function onFirstInteraction() {
+        // Unmute and raise volume, then try to play
+        startMusic({ volume: 0.9, muted: false, restart: false })
+          .then(() => {
+            audioFeedback.textContent = 'Audio enabled — enjoy the music!';
+            playMusicLink.textContent = 'Playing ▶️';
+            setTimeout(() => { playMusicLink.style.display = 'none'; }, 1200);
+          })
+          .catch((err) => {
+            console.warn('Could not unmute on interaction:', err);
+            audioFeedback.textContent = 'Tap the "Play Song" button to allow audio.';
+          });
+        // Remove listeners after first interaction to avoid repeated attempts
+        window.removeEventListener('click', onFirstInteraction);
+        window.removeEventListener('touchstart', onFirstInteraction);
+      }
+
+      window.addEventListener('click', onFirstInteraction, { once: true });
+      window.addEventListener('touchstart', onFirstInteraction, { once: true });
+
       // Primary "Open Happy Folder" button behavior — still attempts to play but doesn't replace explicit play link
       openFolderBtn.addEventListener('click', () => {
         // Try to play music with reduced chance of being blocked since it's a user gesture as part of click.
-        startMusic({ volume: 0.6 }).catch(() => {});
+        startMusic({ volume: 0.6, muted: false }).catch(() => {});
         openingSection.classList.add('opacity-0');
         setTimeout(() => {
           openingSection.classList.add('hidden');
@@ -375,21 +404,16 @@
         e.preventDefault();
         audioFeedback.textContent = '';
         try {
-          // Before playing, ensure audio is ready: reload if no source loaded
           if (!musicPlayer.src || musicPlayer.src.trim() === '') {
             audioFeedback.textContent = 'No audio file found — check path.';
             return;
           }
-
-          // Try to start music and give feedback via link text
-          await startMusic({ volume: 0.9, restart: true });
+          await startMusic({ volume: 0.9, muted: false, restart: true });
           playMusicLink.textContent = 'Playing ▶️';
           playMusicLink.style.opacity = '0.9';
           audioFeedback.textContent = 'Playing — enjoy the song!';
-          // optional: hide after a moment
           setTimeout(() => { playMusicLink.style.display = 'none'; }, 1200);
         } catch (err) {
-          // If playback still blocked, change text to inform user to allow audio or interact again
           console.warn('Playback blocked:', err);
           playMusicLink.textContent = 'Click again to allow sound';
           audioFeedback.textContent = 'Playback blocked by browser. Try clicking the audio controls or tap again.';
