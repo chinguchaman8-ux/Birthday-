@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Sakshii! 🎂✨</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Pacifico font for a fun, playful feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Define the custom font usage */
+        .font-pacifico { font-family: 'Pacifico', cursive; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+
+        /* Custom Keyframes for Festive Animations */
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0.5; }
+        }
+        @keyframes slide-in-left {
+            0% { opacity: 0; transform: translateX(-100%) scale(0.8); }
+            100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        .slide-in-left { animation: slide-in-left 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        @keyframes slide-in-right {
+            0% { opacity: 0; transform: translateX(100%) scale(0.8); }
+            100% { opacity: 1; transform: translateX(0) scale(1); }
+        }
+        .slide-in-right { animation: slide-in-right 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        
+        /* Initial Sparkle/Pulse */
+        @keyframes sparkle-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        .sparkle-pulse { animation: sparkle-pulse 2s ease-in-out infinite alternate; }
+
+        /* Final Collage Blinking/Pulsing Animation */
+        @keyframes collage-blink {
+            0% { filter: brightness(1); box-shadow: 0 0 15px rgba(255, 100, 150, 0.7); }
+            50% { filter: brightness(1.1); box-shadow: 0 0 25px rgba(255, 100, 150, 1); }
+            100% { filter: brightness(1); box-shadow: 0 0 15px rgba(255, 100, 150, 0.7); }
+        }
+        .blinking-collage { animation: collage-blink 3s ease-in-out infinite; }
+
+
+        /* Confetti and Gradient Styles */
+        #confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; z-index: 10; }
+        .confetti { position: absolute; width: 10px; height: 10px; border-radius: 50%; animation: confetti-fall 8s linear infinite; }
+        .gradient-text {
+            background-image: linear-gradient(45deg, #ff7e5f, #feb47b, #ff7e5f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% 200%;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        /* --- Collage Container Styles (For Final State) --- */
+        #memory-flow-container {
+            /* Initial stacking container for sequential flow */
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 1s ease-in-out;
+        }
+        .memory-card { transition: all 1s ease-in-out; transform-origin: center; }
+        #memory-flow-container.collage-grid {
+            /* Final Collage State: Full Screen */
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; max-width: none;
+            padding: 2vh 2vw; margin: 0; display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-auto-rows: 150px; gap: 5px;
+            background-color: rgba(255, 255, 255, 0.9); z-index: 50; overflow-y: auto;
+        }
+        .collage-grid .memory-card { width: 100% !important; height: 100% !important; padding: 0 !important; box-shadow: none !important; }
+        .collage-grid .memory-card > div { height: 100%; width: 100%; border: 2px solid white; border-radius: 0; box-shadow: none !important; overflow: hidden; }
+        .collage-grid .memory-card img { width: 100%; height: 100%; object-fit: cover !important; transition: all 0.5s; }
+        .collage-grid .caption-overlay, .collage-grid .sticker { display: none !important; }
+        .collage-active { overflow: hidden; }
+
+    </style>
+</head>
+
+<body class="font-inter min-h-screen bg-pink-50 bg-opacity-70 flex flex-col items-center p-4 relative overflow-x-hidden">
+
+    <!-- Background Confetti & Animation Layer (Z-index 10) -->
+    <div id="confetti-container"></div>
+
+    <!-- AUDIO ELEMENT - IMPORTANT: REPLACE 'YOUR_AUDIO_LINK_HERE.mp3' WITH A REAL URL -->
+    <audio id="bday-music" loop>
+        <source src="YOUR_AUDIO_LINK_HERE.mp3" type="audio/mpeg" onerror="console.error('Audio file not found or unsupported format.');">
+    </audio>
+
+    <!-- Main Content Container (Z-index 20) -->
+    <main class="w-full max-w-4xl p-6 md:p-10 bg-white rounded-3xl shadow-2xl mt-8 mb-8 z-20">
+
+        <!-- 1. Opening Section (Text is immediately visible) -->
+        <section id="opening-section" class="text-center transition-opacity duration-1000 ease-in-out">
+            <h1 class="text-6xl md:text-8xl font-pacifico leading-tight gradient-text drop-shadow-lg p-2 mb-4 sparkle-pulse">
+                🎉 Happy Birthday Sakshii 🎂💖
+            </h1>
+
+            <!-- Sister's Emotional Paragraph -->
+            <p class="text-xl md:text-2xl font-pacifico text-purple-600 italic max-w-2xl mx-auto mb-6">
+                My dearest Sakshii, you are the brightest light in our lives. Thank you for your kindness, laughter, and for being the most incredible sister. Wishing you a day filled with all the joy you bring to the world!
+            </p>
+
+            <div class="space-y-4 my-8">
+                <p class="text-xl md:text-2xl font-bold text-pink-600">
+                    You’re the best sister ever! 💖✨
+                </p>
+                <p class="text-lg md:text-xl text-purple-600 animate-pulse">
+                    Wishing you smiles, sparkles, and lots of cake 🎂🎈
+                </p>
+            </div>
+
+            <div class="my-10">
+                <!-- 2. Button Section - Now active immediately -->
+                <button id="open-folder-btn" class="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-extrabold py-4 px-8 rounded-full shadow-xl transition transform hover:scale-105 active:scale-95 text-xl tracking-wider uppercase focus:outline-none focus:ring-4 focus:ring-pink-300">
+                    Open Happy Folder 💌
+                </button>
+            </div>
+        </section>
+
+        <!-- 3. Image Animation Section (Happy Folder) - The Scrollable Container -->
+        <section id="happy-folder-section" class="hidden opacity-0 pt-12">
+            <h2 class="text-3xl font-pacifico text-center text-gray-800 mb-8">
+                Unfolding Sweetest Moments 📸
+            </h2>
+            <div id="memory-flow-container" class="w-full max-w-xl mx-auto flex flex-col items-center space-y-4 pb-12">
+                <!-- Image cards will be added here sequentially -->
+            </div>
+            <!-- Back button (Hidden during collage) -->
+            <div id="back-button-container" class="text-center mt-8">
+                <button onclick="window.location.reload()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-full transition transform hover:scale-105">
+                    &larr; Start Over
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const confettiContainer = document.getElementById('confetti-container');
+            const musicPlayer = document.getElementById('bday-music');
+            const openFolderBtn = document.getElementById('open-folder-btn');
+            const openingSection = document.getElementById('opening-section');
+            const happyFolderSection = document.getElementById('happy-folder-section');
+            const memoryFlowContainer = document.getElementById('memory-flow-container');
+            const backButtonContainer = document.getElementById('back-button-container');
+            const body = document.body;
+
+            const imageCount = 15;
+            const captions = ["Sweet Memories 💕", "Best Moments 🎁", "Love You Sis 💖", "Crazy Times 🥳", "Shine Bright ✨", "Priceless Laughter 😂", "Adventures Together 🌍", "Forever Bonded ♾️"];
+            const imageElements = []; // To store all created elements for the collage stage
+
+            const imageSlides = [];
+            for (let i = 1; i <= imageCount; i++) {
+                imageSlides.push({
+                    src: `image${i}.jpg`,
+                    caption: captions[i % captions.length],
+                });
+            }
+
+            // --- 1. Confetti Generation ---
+            const createConfetti = () => {
+                for (let i = 0; i < 50; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = `${Math.random() * 100}vw`;
+                    confetti.style.animationDelay = `${Math.random() * 8}s`;
+                    confetti.style.backgroundColor = ['#ff7e5f', '#feb47b', '#a78bfa', '#ffb7c7'][Math.floor(Math.random() * 4)];
+                    confettiContainer.appendChild(confetti);
+                }
+            };
+            createConfetti();
+
+            // --- 2. Sequential Image Creation and Scroll Logic ---
+            const createCollageImage = (i, directionClass) => {
+                const slide = imageSlides[i - 1];
+                const caption = slide.caption;
+
+                const card = document.createElement('div');
+                card.classList.add('memory-card', 'w-full', 'p-4', 'opacity-0', 'transform', 'transition', 'duration-1000', 'ease-in-out', 'relative');
+                
+                // Set initial position/size for the flow stage
+                card.classList.add('md:w-3/4'); 
+                if (directionClass === 'slide-in-right') {
+                    card.classList.add('self-end');
+                } else {
+                    card.classList.add('self-start');
+                }
+                
+                card.style.height = '350px'; // Consistent height for the flow stage
+
+                card.innerHTML = `
+                    <div class="relative bg-white rounded-xl shadow-2xl border-4 border-pink-300 overflow-hidden w-full h-full ${directionClass}">
+                        <img src="${slide.src}" alt="Memory ${i} with Sakshii"
+                             class="w-full h-full object-cover rounded-lg"
+                             onerror="this.onerror=null;this.src='https://placehold.co/400x300/FFC0CB/000000?text=Sakshii%20Pic%20${i}'">
+
+                        <p class="caption-overlay absolute bottom-0 left-0 bg-purple-500/90 text-white text-xs md:text-sm font-bold p-1 px-3 rounded-tr-xl">${caption}</p>
+                        <span class="sticker absolute top-1 right-1 text-2xl">✨</span>
+                    </div>
+                `;
+
+                memoryFlowContainer.appendChild(card);
+                imageElements.push(card); // Save for collage
+
+                // Trigger animation by removing opacity-0 after appending
+                setTimeout(() => {
+                    card.classList.remove('opacity-0');
+                }, 50);
+
+                // Scroll the window to reveal the new card smoothly
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            };
+
+            const animateImagesSequentially = async () => {
+                const totalDelay = 2000; // Time between cards (1s animation + 1s pause/scroll)
+
+                for (let i = 1; i <= imageCount; i++) {
+                    const directionClass = i % 2 !== 0 ? 'slide-in-left' : 'slide-in-right';
+                    createCollageImage(i, directionClass);
+                    await new Promise(resolve => setTimeout(resolve, totalDelay));
+                }
+
+                // --- 3. Final Merge into Full-Screen Collage ---
+                await new Promise(resolve => setTimeout(resolve, 3000)); // Wait after the last image appears
+                createFinalCollage();
+            };
+
+            const createFinalCollage = () => {
+                // Hide the original page content and back button
+                document.getElementById('happy-folder-section').classList.add('hidden');
+                backButtonContainer.classList.add('hidden');
+                
+                // Add class to body to prevent scrolling
+                body.classList.add('collage-active'); 
+
+                // 1. Change the container to a grid layout and make it full screen
+                memoryFlowContainer.classList.add('collage-grid');
+                memoryFlowContainer.classList.remove('flex-col', 'space-y-4');
+                body.appendChild(memoryFlowContainer); // Move container to body to cover everything
+
+                // 2. Add Blinking/Pulsing Animation to the entire collage container
+                memoryFlowContainer.classList.add('blinking-collage');
+                
+                // 3. Iterate through all image elements and make them snap into the grid
+                imageElements.forEach(card => {
+                    // Reset sequential flow classes and apply collage layout classes
+                    card.classList.remove('self-end', 'self-start', 'w-full', 'md:w-3/4');
+                    
+                    // Reset inner div animation classes for clean merge
+                    const innerDiv = card.querySelector('div');
+                    if (innerDiv) {
+                         innerDiv.classList.remove('slide-in-left', 'slide-in-right', 'shadow-2xl');
+                    }
+                });
+                
+                // Final celebratory message overlay
+                const overlay = document.createElement('div');
+                overlay.className = "fixed inset-0 flex items-center justify-center pointer-events-none z-[60] text-white";
+                overlay.innerHTML = `<p class="text-5xl md:text-7xl font-pacifico bg-black/50 p-4 rounded-xl shadow-xl animate-bounce">Forever Loved, Sakshii! ❤️</p>`;
+                body.appendChild(overlay);
+            };
+
+
+            // --- 4. Event Listener and Music Playback ---
+            const openHappyFolder = () => {
+                // Try to play music upon user interaction
+                musicPlayer.volume = 0.4;
+                musicPlayer.play().catch(e => console.error("Music Playback failed:", e));
+
+                // Start page transition and slideshow
+                openingSection.classList.add('opacity-0');
+                setTimeout(() => {
+                    openingSection.classList.add('hidden');
+                    happyFolderSection.classList.remove('hidden');
+                    setTimeout(() => {
+                        happyFolderSection.classList.remove('opacity-0');
+                        // Start the main sequence
+                        animateImagesSequentially();
+                    }, 50);
+                }, 1000);
+
+                openFolderBtn.disabled = true;
+            };
+
+            openFolderBtn.addEventListener('click', openHappyFolder);
+        });
+    </script>
+
+</body>
+</html>
+
