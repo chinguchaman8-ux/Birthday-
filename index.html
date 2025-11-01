@@ -1,4 +1,4 @@
-```html name=index.html url=https://github.com/chinguchaman8-ux/Birthday-/blob/7a59c01a3ddb82db883441e1b6a8fdb51f96c96c/index.html
+
 <!DOCTYPE html>
 <html lang="en" >
 <head>
@@ -99,20 +99,21 @@
       left: 50%;
       transform: translate(-50%, -50%);
       width: min(92vw, 1000px);
-      height: min(92vh, 700px);
+      height: min(72vh, 700px);
       margin: 0;
       padding: 14px;
-      background-color: rgba(255 255 255 / 0.95);
+      background-color: rgba(255 255 255 / 0.92);
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       grid-auto-rows: 140px;
       gap: 12px;
       overflow: hidden;
-      z-index: 50;
+      z-index: 40; /* lowered so overlay text sits above */
       border-radius: 1rem;
       align-content: center;
       justify-items: center;
       box-shadow: 0 10px 40px rgba(16 24 40 / 0.12);
+      backdrop-filter: blur(6px);
     }
     #memory-flow-container.collage-grid .memory-card {
       display: flex;
@@ -162,26 +163,31 @@
     /* Overlay message */
     .overlay-message {
       position: fixed;
-      inset: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 60; /* ensure overlay text is above collage */
       display: flex;
       justify-content: center;
       align-items: center;
-      pointer-events: none;
-      z-index: 60;
     }
     .overlay-message p {
       font-family: 'Pacifico', cursive;
-      font-size: 3rem;
-      padding: 1rem 2rem;
-      background: rgba(0, 0, 0, 0.45);
-      border-radius: 1rem;
+      font-size: 3.4rem;
+      padding: 0.6rem 1.25rem;
+      background: rgba(0, 0, 0, 0.22); /* soft translucent background so collage shows through */
+      border-radius: 1.25rem;
       color: white;
       animation: bounce 2s ease infinite;
       user-select: none;
+      text-align: center;
+      text-shadow: 0 6px 20px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.25);
+      backdrop-filter: blur(2px);
     }
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-24px); }
+      50% { transform: translateY(-18px); }
     }
 
     /* small play link */
@@ -204,7 +210,8 @@
     /* ensure smaller screens have good sizing */
     @media (max-width: 640px) {
       .slide-img { width: 120px; height: 120px; }
-      #memory-flow-container.collage-grid { padding: 8px; gap: 8px; }
+      #memory-flow-container.collage-grid { padding: 8px; gap: 8px; width: min(96vw, 420px); height: min(60vh, 520px); }
+      .overlay-message p { font-size: 2rem; padding: .5rem .9rem; }
     }
   </style>
 </head>
@@ -244,6 +251,7 @@
       <h2 class="text-3xl font-pacifico text-center text-gray-800 mb-10 select-none">
         Unfolding Sweetest Moments 📸
       </h2>
+      <!-- memory-flow-container will be transformed into a centered collage (fixed) later -->
       <div id="memory-flow-container" class="flex flex-col items-center space-y-6 max-w-xl mx-auto"></div>
       <div id="back-button-container" class="text-center mt-10">
         <button onclick="window.location.reload()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-full transition-transform transform hover:scale-105 select-none">
@@ -340,7 +348,7 @@
         setTimeout(showFinalCollage, 1400);
       }
 
-      // Show final big collage (all images come together and boink)
+      // Show final big collage (all images come together and boink), with centered overlay text in front
       function showFinalCollage(){
         // Hide slideshow UI but keep memoryFlowContainer (we'll transform it)
         openingSection.classList.add('hidden');
@@ -369,6 +377,9 @@
             img.style.width = '100%';
             img.style.height = '100%';
             img.style.objectFit = 'cover';
+            // remove strong border in collage mode for cleaner look
+            img.style.border = 'none';
+            img.style.boxShadow = '0 6px 18px rgba(0,0,0,0.06)';
           }
           const caption = card.querySelector('.caption');
           if (caption) caption.style.display = 'none';
@@ -394,11 +405,19 @@
           }, delay);
         });
 
-        // Add overlay message
+        // Add overlay message centered above collage
+        let existing = document.querySelector('.overlay-message');
+        if (existing) existing.remove();
         let overlay = document.createElement('div');
         overlay.className = 'overlay-message';
         overlay.innerHTML = `<p>Forever Loved, Sakshii! ❤️</p>`;
         body.appendChild(overlay);
+
+        // ensure overlay text remains centered on resize
+        window.requestAnimationFrame(() => {
+          overlay.style.zIndex = 60;
+          memoryFlowContainer.style.zIndex = 40;
+        });
       }
 
       // Helper to explicitly start/unmute music with proper user gesture.
